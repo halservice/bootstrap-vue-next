@@ -157,7 +157,7 @@
   </BTableSimple>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, any>">
 import {computed} from 'vue'
 import {useBooleanish} from '../../composables'
 import {get, isObject, startCase, titleCase} from '../../utils'
@@ -174,7 +174,7 @@ import type {TableFieldObjectFormatter} from '../../types/TableFieldObject'
 import {useToNumber} from '@vueuse/core'
 
 const props = withDefaults(
-  defineProps<BTableLiteProps & Omit<BTableSimpleProps, 'tableVariant'>>(),
+  defineProps<BTableLiteProps<T> & Omit<BTableSimpleProps, 'tableVariant'>>(),
   {
     variant: undefined,
     borderVariant: undefined,
@@ -209,7 +209,7 @@ const emit = defineEmits<{
     key: TableFieldObject['key'],
     field: TableField,
     event: MouseEvent,
-    isFooter: boolean,
+    isFooter: boolean
   ]
   'row-clicked': [item: TableItem, index: number, event: MouseEvent]
   'row-dbl-clicked': [item: TableItem, index: number, event: MouseEvent]

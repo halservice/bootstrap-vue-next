@@ -78,7 +78,7 @@
   </BTableLite>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, any>">
 import {computed, onMounted, ref, useSlots, watch} from 'vue'
 import {useBooleanish, useTableItems} from '../../composables'
 import type {
@@ -125,7 +125,7 @@ const props = withDefaults(
       filter?: string
       filterable?: string[]
     } & Omit<BTableSimpleProps, 'tableClass' | 'tableVariant'> &
-      Omit<BTableLiteProps, 'virtualFields'>
+      Omit<BTableLiteProps<T>, 'virtualFields'>
   >(),
   {
     perPage: undefined,
@@ -179,7 +179,7 @@ const emit = defineEmits<{
     key: TableFieldObject['key'],
     field: TableField,
     event: MouseEvent,
-    isFooter: boolean,
+    isFooter: boolean
   ]
   'row-clicked': [item: TableItem, index: number, event: MouseEvent]
   'row-dbl-clicked': [item: TableItem, index: number, event: MouseEvent]
@@ -245,7 +245,7 @@ const {
   updateInternalItems,
   filteredHandler,
   notifyFilteredItems,
-} = useTableItems(
+} = useTableItems<T>(
   props,
   {
     sortInternalBoolean,

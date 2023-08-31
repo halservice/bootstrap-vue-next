@@ -1,7 +1,7 @@
 import type {TableItem} from './TableItem'
 import type {BTableProviderContext} from './BTableProviderContext'
 
-export type BTableProvider = (
+export type BTableProvider<T extends Record<string, any>> = (
   context: BTableProviderContext,
-  provide: (items: TableItem[]) => Promise<TableItem[] | undefined>
-) => Promise<TableItem[] | undefined> | TableItem[] | undefined
+  provide: (items: TableItem[]) => Promise<TableItem<T>[] | undefined>
+) => Promise<TableItem<T>[] | undefined> | TableItem<T>[] | undefined

@@ -1,8 +1,8 @@
 import {computed, ref, type Ref} from 'vue'
 import type {Booleanish, BTableSortCompare, TableField, TableItem} from '../types'
 
-type TableItemsProcessingProps = {
-  items?: TableItem[]
+type TableItemsProcessingProps<T extends Record<string, any>> = {
+  items?: TableItem<T>[]
   fields?: TableField[]
   perPage?: number
   currentPage?: number
@@ -13,9 +13,9 @@ type TableItemsProcessingProps = {
   sortCompare?: BTableSortCompare
 }
 
-const sortItems = (
+const sortItems = <T extends Record<string, any>>(
   fields?: TableField[],
-  items?: TableItem<Record<string, any>>[],
+  items?: TableItem<T>[],
   sortBy?: string,
   sortDesc?: boolean,
   sorter?: BTableSortCompare
@@ -40,8 +40,8 @@ const sortItems = (
   })
 }
 
-const filterItems = (
-  items: TableItem<Record<string, any>>[],
+const filterItems = <T extends Record<string, any>>(
+  items: TableItem<T>[],
   filter: string,
   filterable?: string[]
 ) =>
@@ -61,13 +61,13 @@ const filterItems = (
       }).length > 0
   )
 
-const mapItems = (
-  items: Ref<TableItem[]>,
-  props: TableItemsProcessingProps,
+const mapItems = <T extends Record<string, any>>(
+  items: Ref<TableItem<T>[]>,
+  props: TableItemsProcessingProps<T>,
   flags: Record<string, Ref<boolean>>,
   sortBy?: Ref<string | undefined>
-): TableItem[] => {
-  let mappedItems: TableItem[] = items.value
+): TableItem<T>[] => {
+  let mappedItems: TableItem<T>[] = items.value
 
   if ('isFilterableTable' in flags && flags.isFilterableTable.value === true && props.filter) {
     mappedItems = filterItems(mappedItems, props.filter, props.filterable)
@@ -86,16 +86,16 @@ const mapItems = (
   return mappedItems
 }
 
-export default (
-  tableProps: TableItemsProcessingProps,
+export default <T extends Record<string, any>>(
+  tableProps: TableItemsProcessingProps<T>,
   flags: Record<string, Ref<boolean>>,
   usesProvider: Ref<boolean>,
   sortBy?: Ref<string | undefined>
 ) => {
-  const filteredHandler = ref<(items: TableItem[]) => void>()
-  const internalItems = ref(tableProps.items ?? [])
+  const filteredHandler = ref<(items: TableItem<T>[]) => void>()
+  const internalItems = ref<TableItem<T>[]>(tableProps.items ?? []) as Ref<TableItem<T>[]>
   const displayStartEndIdx = ref([0, internalItems.value.length])
-  const computedItems = computed<TableItem[]>(() => {
+  const computedItems = computed<TableItem<T>[]>(() => {
     const items = usesProvider.value
       ? internalItems.value
       : flags.requireItemsMapping.value
@@ -117,7 +117,7 @@ export default (
     return items
   })
 
-  const computedDisplayItems = computed<TableItem[]>(() => {
+  const computedDisplayItems = computed<TableItem<T>[]>(() => {
     if (tableProps.perPage === undefined) {
       return computedItems.value
     }
@@ -125,8 +125,8 @@ export default (
   })
 
   const updateInternalItems = async (
-    items: TableItem<Record<string, any>>[]
-  ): Promise<TableItem[] | undefined> => {
+    items: TableItem<T>[]
+  ): Promise<TableItem<T>[] | undefined> => {
     try {
       internalItems.value = items
       return internalItems.value
