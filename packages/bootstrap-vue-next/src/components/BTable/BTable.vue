@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends Record<string, any>">
-import {computed, onMounted, ref, useSlots, watch} from 'vue'
+import {computed, onMounted, type Ref, ref, useSlots, watch} from 'vue'
 import {useBooleanish, useTableItems} from '../../composables'
 import type {
   Booleanish,
@@ -102,7 +102,7 @@ type NoProviderTypes = 'paging' | 'sorting' | 'filtering'
 const props = withDefaults(
   defineProps<
     {
-      provider?: BTableProvider
+      provider?: BTableProvider<T>
       sortCompare?: BTableSortCompare
       noProvider?: NoProviderTypes[]
       noProviderPaging?: Booleanish

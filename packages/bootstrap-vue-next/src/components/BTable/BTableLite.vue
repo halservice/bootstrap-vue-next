@@ -239,7 +239,7 @@ const getFieldHeadLabel = (field: TableField) => {
   return field.key
 }
 
-const normalizeFields = (origFields: TableField[], items: TableItem[]): TableFieldObject[] => {
+const normalizeFields = (origFields: TableField[], items: TableItem<T>[]): TableFieldObject[] => {
   const fields: TableFieldObject[] = []
 
   if (!origFields?.length && items?.length) {
